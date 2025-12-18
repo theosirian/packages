@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,18 +78,31 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _clearBiometricChecking() async {
+    try {
+      await LocalAuthPlatform.instance.clearBiometricChecking();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> _authenticate() async {
     var authenticated = false;
+    final AuthenticationResult authResult;
     try {
       setState(() {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await LocalAuthPlatform.instance.authenticate(
+      authResult = await LocalAuthPlatform.instance.authenticate(
         localizedReason: 'Let OS determine authentication method',
         authMessages: <AuthMessages>[const IOSAuthMessages()],
-        options: const AuthenticationOptions(stickyAuth: true),
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          checkBiometricInvalidationForKey: true,
+        ),
       );
+      authenticated = authResult.isSuccessful();
       setState(() {
         _isAuthenticating = false;
       });
@@ -114,9 +128,15 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
-    setState(
-      () => _authorized = authenticated ? 'Authorized' : 'Not Authorized',
-    );
+    setState(() {
+      _authorized = authResult == AuthenticationResult.SuccessValidated
+          ? 'Authorized and Validated'
+          : authResult == AuthenticationResult.SuccessInvalidated
+              ? 'Authorized and Invalidated'
+              : authenticated
+                  ? 'Authorized'
+                  : 'Not Authorized';
+    });
   }
 
   Future<void> _authenticateWithBiometrics() async {
@@ -126,7 +146,7 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await LocalAuthPlatform.instance.authenticate(
+      authenticated = (await LocalAuthPlatform.instance.authenticate(
         localizedReason:
             'Scan your fingerprint (or face or whatever) to authenticate',
         authMessages: <AuthMessages>[const IOSAuthMessages()],
@@ -134,7 +154,8 @@ class _MyAppState extends State<MyApp> {
           stickyAuth: true,
           biometricOnly: true,
         ),
-      );
+      ))
+          .isSuccessful();
       setState(() {
         _isAuthenticating = false;
         _authorized = 'Authenticating';
@@ -200,6 +221,11 @@ class _MyAppState extends State<MyApp> {
                 ElevatedButton(
                   onPressed: _getEnrolledBiometrics,
                   child: const Text('Get enrolled biometrics'),
+                ),
+                const Divider(height: 100),
+                ElevatedButton(
+                  onPressed: _clearBiometricChecking,
+                  child: const Text('Clear Biometric Checking'),
                 ),
                 const Divider(height: 100),
                 Text('Current State: $_authorized\n'),

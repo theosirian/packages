@@ -21,10 +21,10 @@ void main() {
     test('authenticate handles success', () async {
       api.authReturnValue = AuthResult.success;
 
-      final bool result = await plugin.authenticate(
+      final bool result = (await plugin.authenticate(
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         localizedReason: 'My localized reason',
-      );
+      )).isSuccessful();
 
       expect(result, true);
       expect(api.passedReason, 'My localized reason');
@@ -33,10 +33,10 @@ void main() {
     test('authenticate handles failure', () async {
       api.authReturnValue = AuthResult.failure;
 
-      final bool result = await plugin.authenticate(
+      final bool result = (await plugin.authenticate(
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         localizedReason: 'My localized reason',
-      );
+      )).isSuccessful;
 
       expect(result, false);
       expect(api.passedReason, 'My localized reason');

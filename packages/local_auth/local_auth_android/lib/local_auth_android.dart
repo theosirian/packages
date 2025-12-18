@@ -4,6 +4,7 @@
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 
 import 'src/auth_messages_android.dart';
 import 'src/messages.g.dart';
@@ -27,13 +28,14 @@ class LocalAuthAndroid extends LocalAuthPlatform {
   final LocalAuthApi _api;
 
   @override
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     required Iterable<AuthMessages> authMessages,
     AuthenticationOptions options = const AuthenticationOptions(),
   }) async {
     assert(localizedReason.isNotEmpty);
     final AuthResult result = await _api.authenticate(
+<<<<<<< HEAD
       AuthOptions(
         biometricOnly: options.biometricOnly,
         sensitiveTransaction: options.sensitiveTransaction,
@@ -110,6 +112,117 @@ class LocalAuthAndroid extends LocalAuthPlatform {
           code: LocalAuthExceptionCode.unknownError,
           description: result.errorMessage,
         );
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+        AuthOptions(
+            biometricOnly: options.biometricOnly,
+            sensitiveTransaction: options.sensitiveTransaction,
+            sticky: options.stickyAuth,
+            useErrorDialgs: options.useErrorDialogs),
+        _pigeonStringsFromAuthMessages(localizedReason, authMessages));
+    // TODO(stuartmorgan): Replace this with structured errors, coordinated
+    // across all platform implementations, per
+    // https://github.com/flutter/flutter/blob/master/docs/ecosystem/contributing/README.md#platform-exception-handling
+    // The PlatformExceptions thrown here are for compatibiilty with the
+    // previous Java implementation.
+    switch (result) {
+      case AuthResult.success:
+        return true;
+      case AuthResult.failure:
+        return false;
+      case AuthResult.errorAlreadyInProgress:
+        throw PlatformException(
+            code: 'auth_in_progress', message: 'Authentication in progress');
+      case AuthResult.errorNoActivity:
+        throw PlatformException(
+            code: 'no_activity',
+            message: 'local_auth plugin requires a foreground activity');
+      case AuthResult.errorNotFragmentActivity:
+        throw PlatformException(
+            code: 'no_fragment_activity',
+            message:
+                'local_auth plugin requires activity to be a FragmentActivity.');
+      case AuthResult.errorNotAvailable:
+        throw PlatformException(
+            code: 'NotAvailable',
+            message: 'Security credentials not available.');
+      case AuthResult.errorNotEnrolled:
+        throw PlatformException(
+            code: 'NotEnrolled',
+            message: 'No Biometrics enrolled on this device.');
+      case AuthResult.errorLockedOutTemporarily:
+        throw PlatformException(
+            code: 'LockedOut',
+            message: 'The operation was canceled because the API is locked out '
+                'due to too many attempts. This occurs after 5 failed '
+                'attempts, and lasts for 30 seconds.');
+      case AuthResult.errorLockedOutPermanently:
+        throw PlatformException(
+            code: 'PermanentlyLockedOut',
+            message: 'The operation was canceled because ERROR_LOCKOUT '
+                'occurred too many times. Biometric authentication is disabled '
+                'until the user unlocks with strong authentication '
+                '(PIN/Pattern/Password)');
+=======
+        AuthOptions(
+            biometricOnly: options.biometricOnly,
+            sensitiveTransaction: options.sensitiveTransaction,
+            sticky: options.stickyAuth,
+            useErrorDialgs: options.useErrorDialogs,
+            checkBiometricInvalidationForKey:
+                options.checkBiometricInvalidationForKey),
+        _pigeonStringsFromAuthMessages(localizedReason, authMessages));
+    // TODO(stuartmorgan): Replace this with structured errors, coordinated
+    // across all platform implementations, per
+    // https://github.com/flutter/flutter/blob/master/docs/ecosystem/contributing/README.md#platform-exception-handling
+    // The PlatformExceptions thrown here are for compatibiilty with the
+    // previous Java implementation.
+    switch (result) {
+      case AuthResult.success:
+        return AuthenticationResult.Success;
+      case AuthResult.successValidated:
+        return AuthenticationResult.SuccessValidated;
+      case AuthResult.successInvalidated:
+        return AuthenticationResult.SuccessInvalidated;
+      case AuthResult.failure:
+        return AuthenticationResult.Failure;
+      case AuthResult.errorAlreadyInProgress:
+        throw PlatformException(
+            code: 'auth_in_progress', message: 'Authentication in progress');
+      case AuthResult.errorNoActivity:
+        throw PlatformException(
+            code: 'no_activity',
+            message: 'local_auth plugin requires a foreground activity');
+      case AuthResult.errorNotFragmentActivity:
+        throw PlatformException(
+            code: 'no_fragment_activity',
+            message:
+                'local_auth plugin requires activity to be a FragmentActivity.');
+      case AuthResult.errorNotAvailable:
+        throw PlatformException(
+            code: 'NotAvailable',
+            message: 'Security credentials not available.');
+      case AuthResult.errorNotEnrolled:
+        throw PlatformException(
+            code: 'NotEnrolled',
+            message: 'No Biometrics enrolled on this device.');
+      case AuthResult.errorLockedOutTemporarily:
+        throw PlatformException(
+            code: 'LockedOut',
+            message: 'The operation was canceled because the API is locked out '
+                'due to too many attempts. This occurs after 5 failed '
+                'attempts, and lasts for 30 seconds.');
+      case AuthResult.errorLockedOutPermanently:
+        throw PlatformException(
+            code: 'PermanentlyLockedOut',
+            message: 'The operation was canceled because ERROR_LOCKOUT '
+                'occurred too many times. Biometric authentication is disabled '
+                'until the user unlocks with strong authentication '
+                '(PIN/Pattern/Password)');
+      case AuthResult.errorBiometricChecking:
+        throw PlatformException(
+            code: 'BiometricCheckingFailed',
+            message: 'The biometric checking step failed');
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
     }
   }
 
@@ -142,6 +255,9 @@ class LocalAuthAndroid extends LocalAuthPlatform {
 
   @override
   Future<bool> stopAuthentication() async => _api.stopAuthentication();
+
+  @override
+  Future<void> clearBiometricChecking() async => _api.clearBiometricChecking();
 
   AuthStrings _pigeonStringsFromAuthMessages(
     String localizedReason,

@@ -23,10 +23,14 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  local_auth_android: ^2.0.0
-  local_auth_darwin: ^2.0.0
-  local_auth_platform_interface: ^1.1.0
-  local_auth_windows: ^2.0.0
+  local_auth_android:
+    path: ../local_auth_android
+  local_auth_darwin:
+    path: ../local_auth_darwin
+  local_auth_platform_interface:
+    path: ../local_auth_platform_interface
+  local_auth_windows:
+    path: ../local_auth_windows
 
 dev_dependencies:
   flutter_test:

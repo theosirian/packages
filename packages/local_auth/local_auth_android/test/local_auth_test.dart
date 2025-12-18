@@ -270,10 +270,10 @@ void main() {
           api.authenticate(any, any),
         ).thenAnswer((_) async => AuthResult(code: AuthResultCode.success));
 
-        final bool result = await plugin.authenticate(
+        final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        );
+        )).isSuccessful();
 
         expect(result, true);
       });

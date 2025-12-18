@@ -5,6 +5,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'default_method_channel_platform.dart';
+import 'types/authentication_result.dart';
 import 'types/types.dart';
 
 export 'types/types.dart';
@@ -56,7 +57,7 @@ abstract class LocalAuthPlatform extends PlatformInterface {
   /// customize messages in the dialogs.
   ///
   /// Provide [options] for configuring further authentication related options.
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     required Iterable<AuthMessages> authMessages,
     AuthenticationOptions options = const AuthenticationOptions(),
@@ -98,5 +99,11 @@ abstract class LocalAuthPlatform extends PlatformInterface {
   /// or an error occurred.
   Future<bool> stopAuthentication() async {
     throw UnimplementedError('stopAuthentication() has not been implemented.');
+  }
+
+  /// Clear biometric checking variables
+  Future<void> clearBiometricChecking() async {
+    throw UnimplementedError(
+        'clearBiometricChecking() has not been implemented.');
   }
 }

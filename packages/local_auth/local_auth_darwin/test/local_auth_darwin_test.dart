@@ -333,10 +333,10 @@ void main() {
           (_) async => AuthResultDetails(result: AuthResult.success),
         );
 
-        final bool result = await plugin.authenticate(
+        final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        );
+        )).isSuccessful();
 
         expect(result, true);
       });
@@ -347,10 +347,10 @@ void main() {
               AuthResultDetails(result: AuthResult.authenticationFailed),
         );
 
-        final bool result = await plugin.authenticate(
+        final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        );
+        )).isSuccessful();
 
         expect(result, false);
       });

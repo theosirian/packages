@@ -77,10 +77,10 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> authenticateWithBiometrics() async {
     // #docregion AuthBioOnly
-    final bool didAuthenticate = await auth.authenticate(
+    final bool didAuthenticate = (await auth.authenticate(
       localizedReason: 'Please authenticate to show account balance',
       biometricOnly: true,
-    );
+    )).isSuccessful();
     // #enddocregion AuthBioOnly
     print(didAuthenticate);
   }
@@ -88,9 +88,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> authenticateWithErrorHandling() async {
     // #docregion ErrorHandling
     try {
-      final bool didAuthenticate = await auth.authenticate(
+      final bool didAuthenticate = (await auth.authenticate(
         localizedReason: 'Please authenticate to show account balance',
-      );
+      )).isSuccessful();
       // #enddocregion ErrorHandling
       print(didAuthenticate ? 'Success!' : 'Failure');
       // #docregion ErrorHandling
@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> authenticateWithCustomDialogMessages() async {
     // #docregion CustomMessages
-    final bool didAuthenticate = await auth.authenticate(
+    final bool didAuthenticate = (await auth.authenticate(
       localizedReason: 'Please authenticate to show account balance',
       authMessages: const <AuthMessages>[
         AndroidAuthMessages(
@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> {
         ),
         IOSAuthMessages(cancelButton: 'No thanks'),
       ],
-    );
+    )).isSuccessful();
     // #enddocregion CustomMessages
     print(didAuthenticate ? 'Success!' : 'Failure');
   }

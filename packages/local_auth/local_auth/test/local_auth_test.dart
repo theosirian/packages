@@ -8,6 +8,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 import 'package:local_auth_windows/local_auth_windows.dart';
 import 'package:mockito/mockito.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -30,7 +31,7 @@ void main() {
         authMessages: anyNamed('authMessages'),
         options: anyNamed('options'),
       ),
-    ).thenAnswer((_) async => true);
+    ).thenAnswer((_) async => AuthenticationResult.Success);
     localAuthentication.authenticate(localizedReason: 'Test Reason');
     verify(
       mockLocalAuthPlatform.authenticate(
@@ -93,7 +94,7 @@ class MockLocalAuthPlatform extends Mock
   }
 
   @override
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String? localizedReason,
     required Iterable<AuthMessages>? authMessages,
     AuthenticationOptions? options = const AuthenticationOptions(),
@@ -104,9 +105,9 @@ class MockLocalAuthPlatform extends Mock
               #authMessages: authMessages,
               #options: options,
             }),
-            returnValue: Future<bool>.value(false),
+            returnValue: Future<AuthenticationResult>.value(AuthenticationResult.Failure),
           )
-          as Future<bool>;
+          as Future<AuthenticationResult>;
 
   @override
   Future<List<BiometricType>> getEnrolledBiometrics() =>
