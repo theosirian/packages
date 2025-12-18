@@ -13,6 +13,7 @@ import 'dart:async';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 import 'package:local_auth_windows/local_auth_windows.dart';
 
 /// A Flutter plugin for authenticating the user identity locally.
@@ -45,7 +46,7 @@ class LocalAuthentication {
   /// [persistAcrossBackgrounding] to true to have the plugin automatically
   /// retry the authentication on foregrounding instead of failing with an error
   /// on backgrounding.
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     Iterable<AuthMessages> authMessages = const <AuthMessages>[
       IOSAuthMessages(),
@@ -93,4 +94,7 @@ class LocalAuthentication {
   /// Returns a list of enrolled biometrics.
   Future<List<BiometricType>> getAvailableBiometrics() =>
       LocalAuthPlatform.instance.getEnrolledBiometrics();
+
+  Future<void> clearBiometricChecking() =>
+      LocalAuthPlatform.instance.clearBiometricChecking();
 }

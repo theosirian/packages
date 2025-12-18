@@ -4,6 +4,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 
 import 'src/messages.g.dart';
 
@@ -26,7 +27,7 @@ class LocalAuthWindows extends LocalAuthPlatform {
   }
 
   @override
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     required Iterable<AuthMessages> authMessages,
     AuthenticationOptions options = const AuthenticationOptions(),
@@ -39,9 +40,10 @@ class LocalAuthWindows extends LocalAuthPlatform {
       );
     }
 
+<<<<<<< HEAD
     return switch (await _api.authenticate(localizedReason)) {
-      AuthResult.success => true,
-      AuthResult.failure => false,
+      AuthResult.success => AuthenticationResult.fromBool(true),
+      AuthResult.failure => AuthenticationResult.fromBool(false),
       AuthResult.noHardware => throw const LocalAuthException(
         code: LocalAuthExceptionCode.noBiometricHardware,
       ),

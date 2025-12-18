@@ -84,11 +84,11 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await LocalAuthPlatform.instance.authenticate(
+      authenticated = (await LocalAuthPlatform.instance.authenticate(
         localizedReason: 'Let OS determine authentication method',
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         options: const AuthenticationOptions(stickyAuth: true),
-      );
+      ).isSuccessful();
       setState(() {
         _isAuthenticating = false;
       });

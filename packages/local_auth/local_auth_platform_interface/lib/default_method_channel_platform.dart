@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:flutter/services.dart';
+
 import 'local_auth_platform_interface.dart';
+import 'types/authentication_result.dart';
 
 const MethodChannel _channel = MethodChannel('plugins.flutter.io/local_auth');
 
@@ -16,7 +18,7 @@ const MethodChannel _channel = MethodChannel('plugins.flutter.io/local_auth');
 /// in the pre-federated plugin.
 class DefaultLocalAuthPlatform extends LocalAuthPlatform {
   @override
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     required Iterable<AuthMessages> authMessages,
     AuthenticationOptions options = const AuthenticationOptions(),
@@ -32,7 +34,8 @@ class DefaultLocalAuthPlatform extends LocalAuthPlatform {
     for (final messages in authMessages) {
       args.addAll(messages.args);
     }
-    return (await _channel.invokeMethod<bool>('authenticate', args)) ?? false;
+    return AuthenticationResult.fromBool(
+        (await _channel.invokeMethod<bool>('authenticate', args)) ?? false);
   }
 
   @override

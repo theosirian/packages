@@ -33,6 +33,15 @@ enum AuthResult {
   /// The user authenticated successfully.
   success,
 
+  /// The user authenticated successfully, and biometric checking was true.
+  successValidated,
+
+  /// The user authenticated successfully, and biometric checking was false.
+  successInvalidated,
+
+  /// The user failed to successfully authenticate.
+  failure,
+
   /// Native UI needed to be displayed, but couldn't be.
   uiUnavailable,
 
@@ -55,12 +64,25 @@ enum AuthResult {
 
   /// An error other than the expected types occurred.
   unknownError,
+
+  /// No biometrics are enrolled.
+  errorNotEnrolled,
+
+  /// No passcode is set.
+  errorPasscodeNotSet,
+
+  /// Biometric checking failed.
+  errorBiometricChecking,
 }
 
 class AuthOptions {
-  AuthOptions({required this.biometricOnly, required this.sticky});
+  AuthOptions(
+      {required this.biometricOnly,
+      required this.sticky,
+      this.checkBiometricInvalidationForKey = false});
   final bool biometricOnly;
   final bool sticky;
+  final bool checkBiometricInvalidationForKey;
 }
 
 class AuthResultDetails {
@@ -100,4 +122,7 @@ abstract class LocalAuthApi {
   /// [strings] for any UI.
   @async
   AuthResultDetails authenticate(AuthOptions options, AuthStrings strings);
+
+  /// Clear biometric checking variables
+  void clearBiometricChecking();
 }

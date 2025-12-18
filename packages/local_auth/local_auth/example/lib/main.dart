@@ -82,10 +82,11 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await auth.authenticate(
+      authenticated = (await auth.authenticate(
         localizedReason: 'Let OS determine authentication method',
         persistAcrossBackgrounding: true,
-      );
+      ))
+          .isSuccessful();
       setState(() {
         _isAuthenticating = false;
       });
@@ -124,12 +125,13 @@ class _MyAppState extends State<MyApp> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await auth.authenticate(
+      authenticated = (await auth.authenticate(
         localizedReason:
             'Scan your fingerprint (or face or whatever) to authenticate',
         persistAcrossBackgrounding: true,
         biometricOnly: true,
-      );
+      ))
+          .isSuccessful();
       setState(() {
         _isAuthenticating = false;
         _authorized = 'Authenticating';

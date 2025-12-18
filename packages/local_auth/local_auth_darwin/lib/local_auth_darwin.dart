@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
+import 'package:local_auth_platform_interface/types/authentication_result.dart';
 
 import 'src/messages.g.dart';
 import 'types/auth_messages_ios.dart';
@@ -34,7 +35,7 @@ class LocalAuthDarwin extends LocalAuthPlatform {
   final bool _useMacOSAuthMessages;
 
   @override
-  Future<bool> authenticate({
+  Future<AuthenticationResult> authenticate({
     required String localizedReason,
     required Iterable<AuthMessages> authMessages,
     AuthenticationOptions options = const AuthenticationOptions(),
@@ -44,6 +45,8 @@ class LocalAuthDarwin extends LocalAuthPlatform {
       AuthOptions(
         biometricOnly: options.biometricOnly,
         sticky: options.stickyAuth,
+        checkBiometricInvalidationForKey:
+          options.checkBiometricInvalidationForKey,
       ),
       _useMacOSAuthMessages
           ? _pigeonStringsFromMacOSAuthMessages(localizedReason, authMessages)
@@ -52,9 +55,15 @@ class LocalAuthDarwin extends LocalAuthPlatform {
     LocalAuthExceptionCode code;
     switch (resultDetails.result) {
       case AuthResult.success:
-        return true;
+        return AuthenticationResult.Success;
+      case AuthResult.successValidated:
+        return AuthenticationResult.SuccessValidated;
+      case AuthResult.successInvalidated:
+        return AuthenticationResult.SuccessInvalidated;
+      case AuthResult.failure:
+        return AuthenticationResult.Failure;
       case AuthResult.authenticationFailed:
-        return false;
+        return AuthenticationResult.Failure;
       case AuthResult.appCancel:
         // If the plugin client intentionally canceled authentication, no need
         // to return a specific error.
@@ -118,6 +127,11 @@ class LocalAuthDarwin extends LocalAuthPlatform {
   /// Always returns false as this method is not supported on iOS or macOS.
   @override
   Future<bool> stopAuthentication() async => false;
+
+  @override
+  Future<void> clearBiometricChecking() async {
+    return _api.clearBiometricChecking();
+  }
 
   AuthStrings _pigeonStringsFromiOSAuthMessages(
     String localizedReason,

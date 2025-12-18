@@ -31,10 +31,19 @@ class AuthStrings {
 }
 
 /// Possible outcomes of an authentication attempt.
+<<<<<<< HEAD
 enum AuthResultCode {
   /// The user authenticated successfully.
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+enum AuthResult {
+  /// The user authenticated successfully.
+=======
+enum AuthResult {
+  /// The user authenticated successfully and no biometric checking was done.
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
   success,
 
+<<<<<<< HEAD
   /// The user pressed the negative button, which corresponds to
   /// [AuthStrings.cancelButton].
   negativeButton,
@@ -49,6 +58,19 @@ enum AuthResultCode {
 
   /// Authentication timed out.
   timeout,
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+  /// The user failed to successfully authenticate.
+  failure,
+=======
+  /// The user authenticated successfully, and biometric checking was true.
+  successValidated,
+
+  /// The user authenticated successfully, and biometric checking was false.
+  successInvalidated,
+
+  /// The user failed to successfully authenticate.
+  failure,
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
 
   /// An authentication was already in progress.
   alreadyInProgress,
@@ -76,6 +98,7 @@ enum AuthResultCode {
 
   /// The user is locked out until they log in another way due to too many
   /// failed attempts.
+<<<<<<< HEAD
   lockedOutPermanently,
 
   /// The device does not have enough storage to complete authentication.
@@ -97,17 +120,47 @@ class AuthResult {
 
   /// The error message associated with the result, if any.
   final String? errorMessage;
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+  errorLockedOutPermanently,
+=======
+  errorLockedOutPermanently,
+
+  /// Biometric checking failed.
+  errorBiometricChecking,
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
 }
 
 class AuthOptions {
+<<<<<<< HEAD
   AuthOptions({
     required this.biometricOnly,
     required this.sensitiveTransaction,
     required this.sticky,
   });
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+  AuthOptions(
+      {required this.biometricOnly,
+      required this.sensitiveTransaction,
+      required this.sticky,
+      required this.useErrorDialgs});
+=======
+  AuthOptions(
+      {required this.biometricOnly,
+      required this.sensitiveTransaction,
+      required this.sticky,
+      required this.useErrorDialgs,
+      required this.checkBiometricInvalidationForKey});
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
   final bool biometricOnly;
   final bool sensitiveTransaction;
   final bool sticky;
+<<<<<<< HEAD
+||||||| parent of bfc81e78e ([local_auth] Add Biometric Checking)
+  final bool useErrorDialgs;
+=======
+  final bool useErrorDialgs;
+  final bool checkBiometricInvalidationForKey;
+>>>>>>> bfc81e78e ([local_auth] Add Biometric Checking)
 }
 
 /// Pigeon equivalent of the subset of BiometricType used by Android.
@@ -139,4 +192,7 @@ abstract class LocalAuthApi {
   /// [strings] for any UI.
   @async
   AuthResult authenticate(AuthOptions options, AuthStrings strings);
+
+  /// Clear biometric checking variables
+  void clearBiometricChecking();
 }

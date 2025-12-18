@@ -13,6 +13,7 @@ class AuthenticationOptions {
     this.stickyAuth = false,
     this.sensitiveTransaction = true,
     this.biometricOnly = false,
+    this.checkBiometricInvalidationForKey = false,
   });
 
   /// Whether the system will attempt to handle user-fixable issues encountered
@@ -44,6 +45,9 @@ class AuthenticationOptions {
   /// such as pin, passcode, or pattern.
   final bool biometricOnly;
 
+  /// Whether to execute biometric invalidation checking.
+  final bool checkBiometricInvalidationForKey;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -52,7 +56,9 @@ class AuthenticationOptions {
           useErrorDialogs == other.useErrorDialogs &&
           stickyAuth == other.stickyAuth &&
           sensitiveTransaction == other.sensitiveTransaction &&
-          biometricOnly == other.biometricOnly;
+          biometricOnly == other.biometricOnly &&
+          checkBiometricInvalidationForKey ==
+              other.checkBiometricInvalidationForKey;
 
   @override
   int get hashCode => Object.hash(
@@ -60,5 +66,6 @@ class AuthenticationOptions {
     stickyAuth,
     sensitiveTransaction,
     biometricOnly,
+    checkBiometricInvalidationForKey,
   );
 }
