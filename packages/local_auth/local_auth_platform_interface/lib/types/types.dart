@@ -5,4 +5,5 @@
 export 'auth_exception.dart';
 export 'auth_messages.dart';
 export 'auth_options.dart';
+export 'authentication_result.dart';
 export 'biometric_type.dart';

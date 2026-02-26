@@ -24,7 +24,8 @@ void main() {
       final bool result = (await plugin.authenticate(
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         localizedReason: 'My localized reason',
-      )).isSuccessful();
+      ))
+          .isSuccessful();
 
       expect(result, true);
       expect(api.passedReason, 'My localized reason');
@@ -36,7 +37,8 @@ void main() {
       final bool result = (await plugin.authenticate(
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         localizedReason: 'My localized reason',
-      )).isSuccessful;
+      ))
+          .isSuccessful();
 
       expect(result, false);
       expect(api.passedReason, 'My localized reason');

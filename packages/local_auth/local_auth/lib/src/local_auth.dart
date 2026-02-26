@@ -13,7 +13,6 @@ import 'dart:async';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:local_auth_platform_interface/local_auth_platform_interface.dart';
-import 'package:local_auth_platform_interface/types/authentication_result.dart';
 import 'package:local_auth_windows/local_auth_windows.dart';
 
 /// A Flutter plugin for authenticating the user identity locally.
@@ -56,6 +55,7 @@ class LocalAuthentication {
     bool biometricOnly = false,
     bool sensitiveTransaction = true,
     bool persistAcrossBackgrounding = false,
+    bool checkBiometricInvalidationForKey = false,
   }) {
     return LocalAuthPlatform.instance.authenticate(
       localizedReason: localizedReason,
@@ -64,6 +64,7 @@ class LocalAuthentication {
         stickyAuth: persistAcrossBackgrounding,
         biometricOnly: biometricOnly,
         sensitiveTransaction: sensitiveTransaction,
+        checkBiometricInvalidationForKey: checkBiometricInvalidationForKey,
         // This is a legacy option; implementations compatible with 3.x plus
         // should always assume this is false, so set it accordingly.
         useErrorDialogs: false,

@@ -33,19 +33,19 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     LocalAuthPlatform.instance.isDeviceSupported().then(
-      (bool isSupported) => setState(
-        () => _supportState = isSupported
-            ? _SupportState.supported
-            : _SupportState.unsupported,
-      ),
-    );
+          (bool isSupported) => setState(
+            () => _supportState = isSupported
+                ? _SupportState.supported
+                : _SupportState.unsupported,
+          ),
+        );
   }
 
   Future<void> _checkBiometrics() async {
     late bool deviceSupportsBiometrics;
     try {
-      deviceSupportsBiometrics = await LocalAuthPlatform.instance
-          .deviceSupportsBiometrics();
+      deviceSupportsBiometrics =
+          await LocalAuthPlatform.instance.deviceSupportsBiometrics();
     } on PlatformException catch (e) {
       deviceSupportsBiometrics = false;
       print(e);
@@ -62,8 +62,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _getEnrolledBiometrics() async {
     late List<BiometricType> availableBiometrics;
     try {
-      availableBiometrics = await LocalAuthPlatform.instance
-          .getEnrolledBiometrics();
+      availableBiometrics =
+          await LocalAuthPlatform.instance.getEnrolledBiometrics();
     } on PlatformException catch (e) {
       availableBiometrics = <BiometricType>[];
       print(e);
@@ -88,7 +88,8 @@ class _MyAppState extends State<MyApp> {
         localizedReason: 'Let OS determine authentication method',
         authMessages: <AuthMessages>[const WindowsAuthMessages()],
         options: const AuthenticationOptions(stickyAuth: true),
-      ).isSuccessful();
+      ))
+          .isSuccessful();
       setState(() {
         _isAuthenticating = false;
       });

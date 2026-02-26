@@ -17,7 +17,7 @@ export 'package:local_auth_windows/types/auth_messages_windows.dart';
 class LocalAuthWindows extends LocalAuthPlatform {
   /// Creates a new plugin implementation instance.
   LocalAuthWindows({@visibleForTesting LocalAuthApi? api})
-    : _api = api ?? LocalAuthApi();
+      : _api = api ?? LocalAuthApi();
 
   final LocalAuthApi _api;
 
@@ -40,19 +40,18 @@ class LocalAuthWindows extends LocalAuthPlatform {
       );
     }
 
-<<<<<<< HEAD
     return switch (await _api.authenticate(localizedReason)) {
       AuthResult.success => AuthenticationResult.fromBool(true),
       AuthResult.failure => AuthenticationResult.fromBool(false),
       AuthResult.noHardware => throw const LocalAuthException(
-        code: LocalAuthExceptionCode.noBiometricHardware,
-      ),
+          code: LocalAuthExceptionCode.noBiometricHardware,
+        ),
       AuthResult.notEnrolled => throw const LocalAuthException(
-        code: LocalAuthExceptionCode.noBiometricsEnrolled,
-      ),
+          code: LocalAuthExceptionCode.noBiometricsEnrolled,
+        ),
       AuthResult.deviceBusy => throw const LocalAuthException(
-        code: LocalAuthExceptionCode.biometricHardwareTemporarilyUnavailable,
-      ),
+          code: LocalAuthExceptionCode.biometricHardwareTemporarilyUnavailable,
+        ),
       AuthResult.disabledByPolicy =>
         // This error is niche enough that it doesn't warrant a specific
         // mapping, so just use unknownError with a description.
@@ -61,9 +60,9 @@ class LocalAuthWindows extends LocalAuthPlatform {
           description: 'Group policy has disabled the authentication device.',
         ),
       AuthResult.unavailable => throw const LocalAuthException(
-        code: LocalAuthExceptionCode.unknownError,
-        description: 'Authentication failed with an unsupported result code.',
-      ),
+          code: LocalAuthExceptionCode.unknownError,
+          description: 'Authentication failed with an unsupported result code.',
+        ),
     };
   }
 

@@ -4,4 +4,8 @@
 
 export 'package:local_auth/src/local_auth.dart' show LocalAuthentication;
 export 'package:local_auth_platform_interface/local_auth_platform_interface.dart'
-    show BiometricType, LocalAuthException, LocalAuthExceptionCode, AuthenticationResult;
+    show
+        AuthenticationResult,
+        BiometricType,
+        LocalAuthException,
+        LocalAuthExceptionCode;

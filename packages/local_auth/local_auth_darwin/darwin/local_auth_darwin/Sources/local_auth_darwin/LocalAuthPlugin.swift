@@ -67,6 +67,40 @@ public final class LocalAuthPlugin: NSObject, FlutterPlugin, LocalAuthApi, @unch
   }
 
   // MARK: LocalAuthApi
+    func clearBiometricChecking() throws {
+        UserDefaults.standard.removeObject(forKey: BIOMETRIC_CHECK_KEY)
+    }
+    
+    private let BIOMETRIC_CHECK_KEY = "check-biometrics"
+    
+    private func base64UrlSafe(_ data: Data) -> String {
+        data.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+    
+    private func getBiometricState() -> String? {
+        let context = LAContext()
+        var error: NSError?
+        context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        guard error == nil else { return nil }
+        guard let domainState = context.evaluatedPolicyDomainState else { return nil }
+        return base64UrlSafe(domainState)
+    }
+    
+    private func compareBiometricState() -> Bool {
+        guard let current = getBiometricState() else {
+            return false
+        }
+        
+        guard let previous = UserDefaults.standard.string(forKey: BIOMETRIC_CHECK_KEY) else {
+            UserDefaults.standard.set(current, forKey: BIOMETRIC_CHECK_KEY)
+            return true
+        }
+        
+        return current == previous
+    }
 
   func authenticate(
     options: AuthOptions,
@@ -169,8 +203,13 @@ public final class LocalAuthPlugin: NSObject, FlutterPlugin, LocalAuthApi, @unch
     completion: @escaping (Result<AuthResultDetails, Error>) -> Void
   ) {
     if success {
-      handleResult(result: .success, completion: completion)
-      return
+        if options.checkBiometricInvalidationForKey {
+            let res = compareBiometricState() ? AuthResult.successValidated : AuthResult.successInvalidated
+            handleResult(result: res, completion: completion)
+        } else {
+            handleResult(result: .success, completion: completion)
+        }
+        return
     }
 
     if let error = error as? NSError {
@@ -193,7 +232,7 @@ public final class LocalAuthPlugin: NSObject, FlutterPlugin, LocalAuthApi, @unch
           )))
     }
   }
-
+    
   private func handleResult(
     result: AuthResult, completion: @escaping (Result<AuthResultDetails, Error>) -> Void
   ) {

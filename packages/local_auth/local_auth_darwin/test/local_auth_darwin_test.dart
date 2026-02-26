@@ -336,7 +336,8 @@ void main() {
         final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        )).isSuccessful();
+        ))
+            .isSuccessful();
 
         expect(result, true);
       });
@@ -350,7 +351,8 @@ void main() {
         final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        )).isSuccessful();
+        ))
+            .isSuccessful();
 
         expect(result, false);
       });
@@ -360,10 +362,11 @@ void main() {
           (_) async => AuthResultDetails(result: AuthResult.appCancel),
         );
 
-        final bool result = await plugin.authenticate(
+        final bool result = (await plugin.authenticate(
           localizedReason: 'reason',
           authMessages: <AuthMessages>[],
-        );
+        ))
+            .isSuccessful();
 
         expect(result, false);
       });

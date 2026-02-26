@@ -5,7 +5,6 @@
 import 'package:flutter/services.dart';
 
 import 'local_auth_platform_interface.dart';
-import 'types/authentication_result.dart';
 
 const MethodChannel _channel = MethodChannel('plugins.flutter.io/local_auth');
 
@@ -42,7 +41,7 @@ class DefaultLocalAuthPlatform extends LocalAuthPlatform {
   Future<List<BiometricType>> getEnrolledBiometrics() async {
     final List<String> result =
         (await _channel.invokeListMethod<String>('getAvailableBiometrics')) ??
-        <String>[];
+            <String>[];
     final biometrics = <BiometricType>[];
     for (final value in result) {
       switch (value) {
@@ -65,7 +64,7 @@ class DefaultLocalAuthPlatform extends LocalAuthPlatform {
   Future<bool> deviceSupportsBiometrics() async {
     final List<String> availableBiometrics =
         (await _channel.invokeListMethod<String>('getAvailableBiometrics')) ??
-        <String>[];
+            <String>[];
     // If anything, including the 'undefined' sentinel, is returned, then there
     // is device support for biometrics.
     return availableBiometrics.isNotEmpty;

@@ -5,7 +5,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'default_method_channel_platform.dart';
-import 'types/authentication_result.dart';
 import 'types/types.dart';
 
 export 'types/types.dart';
