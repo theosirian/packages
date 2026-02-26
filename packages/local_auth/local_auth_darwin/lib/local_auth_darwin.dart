@@ -23,8 +23,9 @@ class LocalAuthDarwin extends LocalAuthPlatform {
   LocalAuthDarwin({
     @visibleForTesting LocalAuthApi? api,
     @visibleForTesting bool? overrideUseMacOSAuthMessages,
-  }) : _api = api ?? LocalAuthApi(),
-       _useMacOSAuthMessages = overrideUseMacOSAuthMessages ?? Platform.isMacOS;
+  })  : _api = api ?? LocalAuthApi(),
+        _useMacOSAuthMessages =
+            overrideUseMacOSAuthMessages ?? Platform.isMacOS;
 
   /// Registers this class as the default instance of [LocalAuthPlatform].
   static void registerWith() {
@@ -46,7 +47,7 @@ class LocalAuthDarwin extends LocalAuthPlatform {
         biometricOnly: options.biometricOnly,
         sticky: options.stickyAuth,
         checkBiometricInvalidationForKey:
-          options.checkBiometricInvalidationForKey,
+            options.checkBiometricInvalidationForKey,
       ),
       _useMacOSAuthMessages
           ? _pigeonStringsFromMacOSAuthMessages(localizedReason, authMessages)
@@ -67,7 +68,7 @@ class LocalAuthDarwin extends LocalAuthPlatform {
       case AuthResult.appCancel:
         // If the plugin client intentionally canceled authentication, no need
         // to return a specific error.
-        return false;
+        return AuthenticationResult.Failure;
       case AuthResult.uiUnavailable:
         code = LocalAuthExceptionCode.uiUnavailable;
       case AuthResult.systemCancel:
@@ -93,6 +94,8 @@ class LocalAuthDarwin extends LocalAuthPlatform {
         code = LocalAuthExceptionCode.noCredentialsSet;
       case AuthResult.userFallback:
         code = LocalAuthExceptionCode.userRequestedFallback;
+      case AuthResult.errorBiometricChecking:
+        code = LocalAuthExceptionCode.errorBiometricChecking;
       case AuthResult.unknownError:
         code = LocalAuthExceptionCode.unknownError;
     }

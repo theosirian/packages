@@ -117,6 +117,9 @@ enum LocalAuthExceptionCode {
   /// error.
   deviceError,
 
+  /// Biometric checking failed.
+  errorBiometricChecking,
+
   /// The authentication attempt failed due to some unknown or unexpected error.
   ///
   /// The [LocalAuthException.description] should contain more details about the
